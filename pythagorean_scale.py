@@ -70,12 +70,19 @@ def play_frequency(freq, duration=0.5, sample_rate=44100):
     sd.wait()
 
 
-def play_scale(frequencies, note_duration=0.5):
-    """Play a sequence of frequencies."""
-    print(f"Playing {len(frequencies)} notes...")
-    for i, freq in enumerate(frequencies, 1):
-        print(f"Note {i}: {freq} Hz")
-        play_frequency(freq, duration=note_duration)
+def play_scale(all_octaves, note_duration=0.5):
+    """Play all octaves sequentially."""
+    total_notes = sum(len(octave) for octave in all_octaves)
+    print(f"\nPlaying {len(all_octaves)} octaves ({total_notes} notes total)...")
+
+    note_count = 1
+    for i, octave in enumerate(all_octaves, 1):
+        print(f"\nOctave {i}:")
+        for freq in octave:
+            print(f"  Note {note_count}: {freq} Hz")
+            play_frequency(freq, duration=note_duration)
+            note_count += 1
+
     print("Done!")
 
 
@@ -87,6 +94,7 @@ if __name__ == "__main__":
           %(prog)s                     # Default: A440, 3 octaves
           %(prog)s -r 261.63 -o 5      # C4 root, 5 octaves
           %(prog)s -o 7 -d 1.0         # 7 octaves to hear comma accumulation
+          %(prog)s -p                  # Play the generated scale
         The Pythagorean comma is the ~23.46 cent drift that occurs because 
         (3/2)^12 ≠ 2^7. This script chains octaves to make the drift audible.
         """,
@@ -113,6 +121,13 @@ if __name__ == "__main__":
         default=0.5,
         help="Duration of each note in seconds (default: 0.5)",
     )
+    parser.add_argument(
+        "-p",
+        "--play",
+        action="store_true",
+        help="Play the generated scale",
+    )
+
     args = parser.parse_args()
 
     # Generate multiple octaves
@@ -125,6 +140,6 @@ if __name__ == "__main__":
         print(f"Octave {i}, drift = {drift} Hz")
         print(f"  {octave}")
 
-    # Play base octave
-    print("\nPlaying base octave:")
-    play_scale(all_octaves[0], note_duration=args.duration)
+    # Play all octaves if requested
+    if args.play:
+        play_scale(all_octaves, note_duration=args.duration)
