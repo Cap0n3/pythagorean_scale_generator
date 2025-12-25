@@ -41,13 +41,25 @@ def generate_octaves(root, num_octaves=3):
     """Generate multiple octaves, each starting from the last note of previous."""
     all_octaves = []
     current_root = root
-
     for _ in range(num_octaves):
         octave = generate_pythagorean_scale_octave(current_root)
         current_root = octave[-1] * 2  # Next octave root note
         all_octaves.append(sorted(octave[:-1]))  # Remove 13th note and sort
-
     return all_octaves
+
+
+def calculate_drifts(all_octaves):
+    """Calculate drift for each octave compared to previous octave."""
+    drifts = [0.0]  # First octave has no drift
+
+    for i in range(1, len(all_octaves)):
+        first_note_current = all_octaves[i][0]
+        down_octave = first_note_current / 2
+        first_note_previous = all_octaves[i - 1][0]
+        drift = round(down_octave - first_note_previous, 2)
+        drifts.append(drift)
+
+    return drifts
 
 
 def play_frequency(freq, duration=0.5, sample_rate=44100):
@@ -75,7 +87,6 @@ if __name__ == "__main__":
           %(prog)s                     # Default: A440, 3 octaves
           %(prog)s -r 261.63 -o 5      # C4 root, 5 octaves
           %(prog)s -o 7 -d 1.0         # 7 octaves to hear comma accumulation
-
         The Pythagorean comma is the ~23.46 cent drift that occurs because 
         (3/2)^12 ≠ 2^7. This script chains octaves to make the drift audible.
         """,
@@ -102,20 +113,18 @@ if __name__ == "__main__":
         default=0.5,
         help="Duration of each note in seconds (default: 0.5)",
     )
-
     args = parser.parse_args()
-
-    # Generate base octave
-    base_octave = generate_octaves(args.root, 1)[0]
-    print(f"Base octave (starting from {args.root} Hz):")
-    print(base_octave)
 
     # Generate multiple octaves
     all_octaves = generate_octaves(args.root, args.num_octaves)
-    print(f"\n{args.num_octaves} octaves:")
-    for i, octave in enumerate(all_octaves, 1):
-        print(f"Octave {i}: {octave}")
+    drifts = calculate_drifts(all_octaves)
+
+    print(f"{args.num_octaves} octaves (starting from {args.root} Hz):\n")
+
+    for i, (octave, drift) in enumerate(zip(all_octaves, drifts), 1):
+        print(f"Octave {i}, drift = {drift} Hz")
+        print(f"  {octave}")
 
     # Play base octave
     print("\nPlaying base octave:")
-    play_scale(base_octave, note_duration=args.duration)
+    play_scale(all_octaves[0], note_duration=args.duration)
