@@ -80,6 +80,24 @@ This tuning problem has been known since ancient Greece and is why:
 - Various temperaments were developed (meantone, well-tempered)
 - Modern equal temperament became the standard (each semitone = 2^(1/12))
 
+## Testing
+
+Run tests with pytest:
+
+```bash
+# Install pytest
+pip install pytest
+
+# Run all tests
+pytest
+
+# Run with output
+pytest -v
+
+# Run with print statements visible
+pytest -s
+```
+
 ## Author
 
 Coded by **Alex Guillin**
