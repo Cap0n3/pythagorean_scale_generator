@@ -1,6 +1,6 @@
 # Pythagorean Scale Generator
 
-A Python tool to generate and visualize the Pythagorean comma - the tuning discrepancy that occurs when building musical scales using the cycle of perfect fifths.
+I'm studying Pythagorean scales and created this small program to help me better understand their construction and irregularities, particularly the Pythagorean comma. This is not a definitive program that handles every aspect of Pythagorean tuning at all, although it could evolve into one someday. I took the liberty of thinking about the intervals in Hertz rather than their mathematical relationships (ratios) or cents, as it makes more sense to me that way (a more physical approach to sound).
 
 ## What is the Pythagorean Comma?
 
