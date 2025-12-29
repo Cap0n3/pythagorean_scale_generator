@@ -57,3 +57,32 @@ def test_generate_single_octave(freq):
             f"Index {index} (Note {index + 1}): expected={expected}, actual={actual}, ratio={ratio}"
         )
         assert actual == expected
+
+
+@pytest.mark.parametrize("root,num_octaves", [(440, 3), (261.63, 2)])
+def test_generate_octaves(root, num_octaves):
+    """Test multiple octaves generation with correct ratios."""
+    scale = PythagoreanScale(root=root, num_octaves=num_octaves)
+    octaves = scale.octaves
+
+    # 1. Check if octaves are correctly generated
+    assert octaves is not None
+    assert isinstance(octaves, list)
+    assert len(octaves) == num_octaves
+
+    # 2. Check if ratios are correct in each generated octave
+    for octave_num, octave in enumerate(octaves, 1):
+        # Use first note of sorted octave as reference
+        octave_root = octave[0]
+        print(f"\nOctave {octave_num}, root={octave_root}")
+        print(f"Notes: {octave}")
+
+        # Each octave should have 12 notes
+        assert len(octave) == 12
+
+        # Check ratios for this octave
+        for index, ratio in PYTHAGOREAN_RATIOS:
+            expected = round(octave_root * ratio, 2)
+            actual = octave[index]
+            print(f"  Index {index}: expected={expected}, actual={actual}, ratio={ratio}")
+            assert actual == expected
