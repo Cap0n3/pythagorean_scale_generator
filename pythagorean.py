@@ -62,13 +62,15 @@ class PythagoreanScale:
         return nums[i] if i < len(nums) else None
 
     def _calculate_drifts(self):
-        """Calculate drift for each octave compared to previous octave."""
-        drifts = [0.0]
-        for i in range(1, len(self.octaves)):
-            first_note_current = self.octaves[i][0]
-            down_octave = first_note_current / 2
-            first_note_previous = self.octaves[i - 1][0]
-            drift = round(down_octave - first_note_previous, 2)
+        """Calculate drift for each octave compared to expected perfect octave."""
+        drifts = []
+        for i in range(len(self.octaves)):
+            # Expected perfect octave: root * 2^i
+            expected_octave = self.root * (2 ** i)
+            # Actual first note of generated octave
+            actual_octave = self.octaves[i][0]
+            # Drift in Hz
+            drift = round(actual_octave - expected_octave, 2)
             drifts.append(drift)
         return drifts
 
@@ -76,7 +78,9 @@ class PythagoreanScale:
         """Display octaves and drifts."""
         print(f"{self.num_octaves} octaves (starting from {self.root} Hz):\n")
         for i, (octave, drift) in enumerate(zip(self.octaves, self.drifts), 1):
-            print(f"Octave {i}, drift = {drift} Hz")
+            actual_oct = octave[0]
+            perfect_oct = self.root * (2 ** (i - 1))
+            print(f"Octave {i}, drift = {drift} Hz (actual oct={actual_oct}, perfect oct={perfect_oct})")
             print(f"  {octave}")
 
     def plot_drift(self, filename="drift_plot.png"):
