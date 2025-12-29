@@ -22,7 +22,7 @@ The difference is approximately **23.46 cents** (the Pythagorean comma). This sc
 ## Installation
 
 ```bash
-pip install sounddevice numpy
+pip install sounddevice numpy matplotlib
 ```
 
 ## Usage
@@ -41,6 +41,9 @@ python pythagorean_scale.py -r 261.63 -o 5
 
 # Generate 7 octaves to clearly hear comma accumulation
 python pythagorean_scale.py -o 7 -p -d 1.0
+
+# Visualize drift accumulation with a chart (saves to drift_plot.png)
+python pythagorean_scale.py -o 5 --plot-drift
 ```
 
 ### Command-Line Arguments
@@ -91,11 +94,22 @@ pip install pytest
 # Run all tests
 pytest
 
-# Run with output
+# Run with verbose output
 pytest -v
 
 # Run with print statements visible
 pytest -s
+
+# Run specific test file
+pytest tests/test_pythagorean.py
+
+# Run specific test with specific parameter (use quotes!)
+pytest "tests/test_pythagorean.py::test_octave_reduce[660]"
+pytest "tests/test_pythagorean.py::test_generate_single_octave[440]"
+pytest "tests/test_pythagorean.py::test_generate_octaves[440-8]"
+
+# List all available tests and parameters
+pytest --collect-only tests/test_pythagorean.py
 ```
 
 ## Author

@@ -46,6 +46,11 @@ if __name__ == "__main__":
         action="store_true",
         help="Play the generated scale",
     )
+    parser.add_argument(
+        "--plot-drift",
+        action="store_true",
+        help="Plot drift accumulation across octaves (requires matplotlib)",
+    )
 
     args = parser.parse_args()
 
@@ -54,6 +59,10 @@ if __name__ == "__main__":
 
     # Display results
     scale.display()
+
+    # Plot drift if requested
+    if args.plot_drift:
+        scale.plot_drift()
 
     # Play if requested
     if args.play:

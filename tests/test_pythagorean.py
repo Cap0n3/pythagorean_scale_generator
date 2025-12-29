@@ -6,17 +6,17 @@ from pythagorean import PythagoreanScale
 
 # Pythagorean ratios for each note relative to root
 PYTHAGOREAN_RATIOS = [
-    (1, 2187 / 2048),      # Index 1, Note 2
-    (2, 9 / 8),            # Index 2, Note 3
-    (3, 19683 / 16384),    # Index 3, Note 4
-    (4, 81 / 64),          # Index 4, Note 5
+    (1, 2187 / 2048),  # Index 1, Note 2
+    (2, 9 / 8),  # Index 2, Note 3
+    (3, 19683 / 16384),  # Index 3, Note 4
+    (4, 81 / 64),  # Index 4, Note 5
     (5, 177147 / 131072),  # Index 5, Note 6
-    (6, 729 / 512),        # Index 6, Note 7
-    (7, 3 / 2),            # Index 7, Note 8
-    (8, 6561 / 4096),      # Index 8, Note 9
-    (9, 27 / 16),          # Index 9, Note 10
-    (10, 59049 / 32768),   # Index 10, Note 11
-    (11, 243 / 128),       # Index 11, Note 12
+    (6, 729 / 512),  # Index 6, Note 7
+    (7, 3 / 2),  # Index 7, Note 8
+    (8, 6561 / 4096),  # Index 8, Note 9
+    (9, 27 / 16),  # Index 9, Note 10
+    (10, 59049 / 32768),  # Index 10, Note 11
+    (11, 243 / 128),  # Index 11, Note 12
 ]
 
 
@@ -31,7 +31,7 @@ def test_octave_reduce(freq):
     assert all(f >= 20 for f in result)
 
 
-@pytest.mark.parametrize("freq", [440, 835.31])
+@pytest.mark.parametrize("freq", [110, 220, 440, 835.31])
 def test_generate_single_octave(freq):
     """Test single octave generation with correct ratios."""
     scale = PythagoreanScale()
@@ -59,7 +59,9 @@ def test_generate_single_octave(freq):
         assert actual == expected
 
 
-@pytest.mark.parametrize("root,num_octaves", [(440, 3), (261.63, 2)])
+@pytest.mark.parametrize(
+    "root,num_octaves", [(110, 2), (110, 8), (220, 8), (440, 8), (261.63, 8)]
+)
 def test_generate_octaves(root, num_octaves):
     """Test multiple octaves generation with correct ratios."""
     scale = PythagoreanScale(root=root, num_octaves=num_octaves)
@@ -84,5 +86,7 @@ def test_generate_octaves(root, num_octaves):
         for index, ratio in PYTHAGOREAN_RATIOS:
             expected = round(octave_root * ratio, 2)
             actual = octave[index]
-            print(f"  Index {index}: expected={expected}, actual={actual}, ratio={ratio}")
+            print(
+                f"  Index {index}: expected={expected}, actual={actual}, ratio={ratio}"
+            )
             assert actual == expected

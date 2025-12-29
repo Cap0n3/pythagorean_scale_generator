@@ -1,6 +1,7 @@
 import bisect
 import sounddevice as sd
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class PythagoreanScale:
@@ -26,6 +27,7 @@ class PythagoreanScale:
         for _ in range(self.num_octaves):
             octave = self._generate_single_octave(current_root)
             current_root = octave[-1] * 2
+            # Remove octave
             all_octaves.append(sorted(octave[:-1]))
         return all_octaves
 
@@ -76,6 +78,25 @@ class PythagoreanScale:
         for i, (octave, drift) in enumerate(zip(self.octaves, self.drifts), 1):
             print(f"Octave {i}, drift = {drift} Hz")
             print(f"  {octave}")
+
+    def plot_drift(self, filename="drift_plot.png"):
+        """Visualize drift accumulation across octaves."""
+        if self.num_octaves < 3:
+            print("Need at least 3 octaves to plot drift")
+            return
+
+        octave_numbers = list(range(1, self.num_octaves + 1))
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(octave_numbers, self.drifts, marker="o", linewidth=2, markersize=8)
+        plt.xlabel("Octave Number", fontsize=12)
+        plt.ylabel("Drift (Hz)", fontsize=12)
+        plt.title(f"Pythagorean Comma Accumulation (Root: {self.root} Hz)", fontsize=14)
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        plt.savefig(filename, dpi=150, bbox_inches="tight")
+        print(f"\nDrift plot saved to: {filename}")
+        plt.show()
 
     def play(self, note_duration=0.5):
         """Play all octaves sequentially."""
